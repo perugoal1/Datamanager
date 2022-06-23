@@ -24,15 +24,16 @@ object CSVHelper {
                     for (csvRecord in csvRecords) {
 //                        if (index == 0) continue;
 //                        val rec= csvRecord.get("values")
-                         println(csvRecord.get("InvoiceNo"))
+                        println(csvRecord.get("InvoiceNo"))
+                        println(csvRecord.get("CustomerID")?.toDoubleOrNull() ?: 0)
                         val row = CsvRow(
-                            csvRecord.get("InvoiceNo").toLong(),//InvoiceNo
+                            csvRecord.get("InvoiceNo"),//InvoiceNo
                             csvRecord.get("StockCode"), //StockCode
-                            csvRecord.get("Description"), //Description
-                            csvRecord.get("Quantity").toInt(), //Quantity
+                            csvRecord.get("Description") ?: "", //Description
+                            csvRecord.get("Quantity")?.toIntOrNull() ?: 0, //Quantity
                             csvRecord.get("InvoiceDate"), //InvoiceDate
-                            csvRecord.get("UnitPrice").toDouble(), //UnitPrice
-                            csvRecord.get("CustomerID").toLong(), //CustomerID
+                            csvRecord.get("UnitPrice")?.toDoubleOrNull() ?: 0.00, //UnitPrice
+                            csvRecord.get("CustomerID")?.toLongOrNull() ?: 0, //CustomerID
                             csvRecord.get("Country"), //Country
                         )
                         println(3333)

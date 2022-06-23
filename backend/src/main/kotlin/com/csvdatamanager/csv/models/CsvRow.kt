@@ -11,31 +11,31 @@ class CsvRow {
     var id: Long = 0
 
     @Column(name = "invoiceNo")
-    var invoiceNo: Long = 0
+    var invoiceNo: String = ""
 
     @Column(name = "stockCode")
-    var stockCode: String? = null
+    var stockCode: String = ""
 
     @Column(name = "description")
-    var description: String? = null
+    var description: String = ""
 
     @Column(name = "quantity")
     var quantity: Int = 0
 
     @Column(name = "invoiceDate")
-    var invoiceDate: String? = null
+    var invoiceDate: String = ""
 
     @Column(name = "unitPrice")
-    var unitPrice: Double = 0.00
+    var unitPrice: Double? = 0.00
 
     @Column(name = "customerId")
-    var customerId: Long = 0
+    var customerId: Long? = 0
 
     @Column(name = "country")
-    var country: String? = null
+    var country: String = ""
 
     constructor() {}
-    constructor(invoiceNo: Long, stockCode: String?, description: String?, quantity: Int, invoiceDate: String?, unitPrice: Double, customerId: Long, country: String?) {
+    constructor(invoiceNo: String, stockCode: String, description: String, quantity: Int, invoiceDate: String, unitPrice: Double, customerId: Long, country: String) {
         this.invoiceNo = invoiceNo
         this.stockCode = stockCode
         this.description = description

@@ -1,16 +1,20 @@
 package com.csvdatamanager.csv.controllers
 
+import com.csvdatamanager.csv.dtos.ResponseMessage
 import com.csvdatamanager.csv.models.CsvRow
 import com.csvdatamanager.csv.utils.CSVHelper.hasCSVFormat
 import com.csvdatamanager.csv.utils.CSVService
-import com.csvdatamanager.csv.dtos.ResponseMessage
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import java.io.IOException
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+
 
 @RestController
 class MessageResource {
@@ -22,19 +26,36 @@ class MessageResource {
     )
 }
 data class Message(val id: String?, val text: String)
-
-@CrossOrigin("http://localhost:8080")
-@Controller
-@RequestMapping("/api/csv")
+@CrossOrigin(origins = ["*"], maxAge = 3600)
+@RestController
 class CSVController {
     @Autowired
     var fileService: CSVService? = null
+
+    private val sseEmitters: MutableMap<String, SseEmitter> = ConcurrentHashMap()
+
+    @GetMapping("/progress")
+    @Throws(IOException::class)
+    fun eventEmitter(): SseEmitter? {
+        val sseEmitter = SseEmitter(Long.MAX_VALUE)
+        val guid = UUID.randomUUID()
+        sseEmitters[guid.toString()] = sseEmitter
+        println(333333)
+        println(sseEmitters)
+        sseEmitter.send(SseEmitter.event().name("GUI_ID").data(guid))
+        sseEmitter.onCompletion { sseEmitters.remove(guid.toString()) }
+        sseEmitter.onTimeout { sseEmitters.remove(guid.toString()) }
+        return sseEmitter
+    }
     @PostMapping("/upload")
-    fun uploadFile(@RequestParam("file") file: MultipartFile): ResponseEntity<ResponseMessage> {
+    fun uploadFile(@RequestParam("file") file: MultipartFile, @RequestParam("guid") guid: String): ResponseEntity<ResponseMessage> {
         var message = ""
         if (hasCSVFormat(file)) {
             return try {
-                fileService!!.save(file)
+                println(9999999)
+                println(sseEmitters[guid])
+                fileService!!.save(file, sseEmitters[guid], guid);
+                sseEmitters.remove(guid);
                 message = "Uploaded the file successfully: " + file.originalFilename
                 val fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/api/csv/download/")
@@ -53,7 +74,7 @@ class CSVController {
     @GetMapping("/getData")
     fun getAllCsv(): ResponseEntity<List<CsvRow?>?>? {
         return try {
-            val rows: List<CsvRow?> = fileService!!.allTutorials
+            val rows: List<CsvRow?> = fileService!!.allRecords
 
             if (rows.isEmpty()) {
                 ResponseEntity<List<CsvRow?>?>(HttpStatus.NO_CONTENT)
@@ -62,4 +83,12 @@ class CSVController {
             ResponseEntity<List<CsvRow?>?>(null, HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
+}
+
+private fun <K, V> Map<K, V>.put(toString: K, sseEmitter: V) {
+
+}
+
+private fun <K, V> Map<K, V>.remove(guid: K) {
+
 }
