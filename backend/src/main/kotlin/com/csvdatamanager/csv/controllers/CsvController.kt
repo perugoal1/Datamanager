@@ -5,6 +5,7 @@ import com.csvdatamanager.csv.models.CsvRow
 import com.csvdatamanager.csv.utils.CSVHelper.hasCSVFormat
 import com.csvdatamanager.csv.utils.CSVService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -72,23 +73,21 @@ class CSVController {
     }
 
     @GetMapping("/getData")
-    fun getAllCsv(): ResponseEntity<List<CsvRow?>?>? {
+    fun getAllCsv(): ResponseEntity<Page<CsvRow?>?>? {
         return try {
-            val rows: List<CsvRow?> = fileService!!.allRecords
-
-            if (rows.isEmpty()) {
-                ResponseEntity<List<CsvRow?>?>(HttpStatus.NO_CONTENT)
-            } else ResponseEntity<List<CsvRow?>?>(rows, HttpStatus.OK)
+            println(222222)
+            val rows: Page<CsvRow?>? = fileService!!.findByPagingCriteria()
+            println(3333333)
+            println(rows)
+            if (rows?.isEmpty == true) {
+                ResponseEntity<Page<CsvRow?>?>(HttpStatus.NO_CONTENT)
+            } else ResponseEntity<Page<CsvRow?>?>(rows, HttpStatus.OK)
         } catch (e: java.lang.Exception) {
-            ResponseEntity<List<CsvRow?>?>(null, HttpStatus.INTERNAL_SERVER_ERROR)
+            ResponseEntity<Page<CsvRow?>?>(null, HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
-}
 
-private fun <K, V> Map<K, V>.put(toString: K, sseEmitter: V) {
-
-}
-
-private fun <K, V> Map<K, V>.remove(guid: K) {
-
+    private fun <T> ResponseEntity(headers: MutableList<CsvRow?>?, status: HttpStatus): ResponseEntity<Page<CsvRow?>?> {
+        TODO("Not yet implemented")
+    }
 }
