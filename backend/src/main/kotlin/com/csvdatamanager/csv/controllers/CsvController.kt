@@ -41,8 +41,6 @@ class CSVController {
         val sseEmitter = SseEmitter(Long.MAX_VALUE)
         val guid = UUID.randomUUID()
         sseEmitters[guid.toString()] = sseEmitter
-        println(333333)
-        println(sseEmitters)
         sseEmitter.send(SseEmitter.event().name("GUI_ID").data(guid))
         sseEmitter.onCompletion { sseEmitters.remove(guid.toString()) }
         sseEmitter.onTimeout { sseEmitters.remove(guid.toString()) }
@@ -72,22 +70,47 @@ class CSVController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage(message, ""))
     }
 
+
+//    @PostMapping("/api/foos")
+//    @ResponseBody
+//    fun addFoo(@RequestParam(name = "id") fooId: String, @RequestParam name: String): String? {
+//        return "ID: $fooId Name: $name"
+//    }
     @GetMapping("/getData")
-    fun getAllCsv(): ResponseEntity<Page<CsvRow?>?>? {
+    fun getAllCsv( @RequestParam("page", required=false) page: String,
+                   @RequestParam("invoiceNo", required=false) invoiceNo: String?,
+                   @RequestParam("stockCode", required=false) stockCode: String?,
+                   @RequestParam("description", required=false) description: String?,
+                   @RequestParam("quantity", required=false) quantity: String?,
+                   @RequestParam("invoiceDate", required=false) invoiceDate: String?,
+                   @RequestParam("unitPrice", required=false) unitPrice: String?,
+                   @RequestParam("customerId", required=false) customerId: String?,
+                   @RequestParam("country", required=false) country: String?,
+                   @RequestParam("sort", required=false) sort: String?,
+                   @RequestParam("order", required=false) order: String?
+                   ): ResponseEntity<Page<CsvRow?>?>? {
         return try {
-            println(222222)
-            val rows: Page<CsvRow?>? = fileService!!.findByPagingCriteria()
-            println(3333333)
-            println(rows)
+            println(page)
+            val filterParam: MutableMap<String, String?> = mutableMapOf<String, String?>()
+            filterParam["invoiceNo"] = invoiceNo
+            filterParam["stockCode"] = stockCode
+            filterParam["description"] = description
+            filterParam["quantity"] = quantity
+            filterParam["invoiceDate"] = invoiceDate
+            filterParam["unitPrice"] = unitPrice
+            filterParam["customerId"] = customerId
+            filterParam["country"] = country
+
+            val sortParam: MutableMap<String, String?> = mutableMapOf<String, String?>()
+            sortParam["sort"] = sort
+            sortParam["order"] = order
+
+            val rows: Page<CsvRow?>? = fileService?.findByPagingCriteria(page, filterParam, sortParam)
             if (rows?.isEmpty == true) {
-                ResponseEntity<Page<CsvRow?>?>(HttpStatus.NO_CONTENT)
+                ResponseEntity<Page<CsvRow?>?>(rows, HttpStatus.OK)
             } else ResponseEntity<Page<CsvRow?>?>(rows, HttpStatus.OK)
         } catch (e: java.lang.Exception) {
             ResponseEntity<Page<CsvRow?>?>(null, HttpStatus.INTERNAL_SERVER_ERROR)
         }
-    }
-
-    private fun <T> ResponseEntity(headers: MutableList<CsvRow?>?, status: HttpStatus): ResponseEntity<Page<CsvRow?>?> {
-        TODO("Not yet implemented")
     }
 }

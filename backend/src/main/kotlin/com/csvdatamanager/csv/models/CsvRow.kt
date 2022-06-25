@@ -8,7 +8,7 @@ public class CsvRow  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    var id: Long = 0
+    var id: Long? = null
 
     @Column(name = "invoiceNo")
     var invoiceNo: String? = null
@@ -29,13 +29,13 @@ public class CsvRow  {
     var unitPrice: Double? = null
 
     @Column(name = "customerId")
-    var customerId: Long? = null
+    var customerId: Int? = null
 
     @Column(name = "country")
     var country: String? = null
 
     constructor() {}
-    constructor(invoiceNo: String, stockCode: String?, description: String?, quantity: Int?, invoiceDate: String?, unitPrice: Double?, customerId: Long?, country: String?) {
+    constructor(invoiceNo: String?, stockCode: String?, description: String?, quantity: Int?, invoiceDate: String?, unitPrice: Double?, customerId: Int?, country: String?) {
         this.invoiceNo = invoiceNo
         this.stockCode = stockCode
         this.description = description

@@ -33,11 +33,9 @@ object CSVHelper {
                             csvRecord.get("Quantity")?.toIntOrNull() ?: 0, //Quantity
                             csvRecord.get("InvoiceDate"), //InvoiceDate
                             csvRecord.get("UnitPrice")?.toDoubleOrNull() ?: 0.00, //UnitPrice
-                            csvRecord.get("CustomerID")?.toLongOrNull() ?: 0, //CustomerID
+                            csvRecord.get("CustomerID")?.toIntOrNull() ?: 0, //CustomerID
                             csvRecord.get("Country"), //Country
                         )
-                        println(3333)
-                        println(row)
                         rowList.add(row)
                     }
                     println(rowList)

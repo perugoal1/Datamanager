@@ -66,29 +66,33 @@ function UploadFiles() {
             { (uploadProgress || progress) ?
                 <h4 className="my-2">{uploadProgress === 100  ? (`Processing : ${progress}% `) : (`Uploading : ${uploadProgress}% `) } </h4> :''
             }
-            <div className="progress  my-2">
-                <div
-                    className="progress-bar progress-bar-info progress-bar-striped"
-                    role="progressbar"
-                    style={{ width: uploadProgress + "%" }}
-                >
-                {uploadProgress}% Uploaded
+            { (uploadProgress !== 0 )  &&
+                <div>
+                    <div className="progress  my-2">
+                        <div
+                            className="progress-bar progress-bar-info progress-bar-striped"
+                            role="progressbar"
+                            style={{ width: uploadProgress + "%" }}
+                        >
+                        {uploadProgress}% Uploaded
+                        </div>
+                    </div>
+                    <div className="progress  my-2">
+                        <div
+                            className="progress-bar bg-success progress-bar-striped"
+                            role="progressbar"
+                            style={{ width: progress + "%" }}
+                        >
+                        {progress}%
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div className="progress  my-2">
-                <div
-                    className="progress-bar bg-success progress-bar-striped"
-                    role="progressbar"
-                    style={{ width: progress + "%" }}
-                >
-                {progress}%
-                </div>
-            </div>
+             }
             <label className="btn btn-default">
                 <input type="file" onChange={selectFile} />
             </label>
             <button className="btn btn-success"
-
+            disabled={!currentFile}
             onClick={upload}
             >
                 Upload

@@ -13,9 +13,14 @@ const upload = (file: string | Blob,guidValue: string, onUploadProgress: any) =>
     });
 };
 
+const getData = (query: string) => {
+    return http.get("/getData" + query);
+};
+
 
 const apiService = {
-    upload
+    upload,
+    getData
 };
 
 export default apiService;

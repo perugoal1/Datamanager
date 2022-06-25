@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.io.IOException
+import java.util.*
 
 
 @Service
@@ -38,22 +39,53 @@ class CSVService {
 //    val allRecords: MutableList<CsvRow?>
 //        get() = repository?.findAll() as MutableList<CsvRow?>
 
-    fun findByPagingCriteria(): Page<CsvRow?>? {
+    fun findByPagingCriteria(page: String, filterParam: MutableMap<String, String?>, sortParam: MutableMap<String, String?>): Page<CsvRow?>? {
         try {
-                val paging: Pageable = PageRequest.of(0, 10)
+                val csvRow = CsvRow(
+                    filterParam["invoiceNo"] ?: null,
+                    filterParam["stockCode"]?: null,
+                    filterParam["description"]?: null,
+                    filterParam["quantity"]?.toIntOrNull() ?: null,
+                    filterParam["invoiceDate"]?: null,
+                    filterParam["unitPrice"]?.toDoubleOrNull() ?: null,
+                    filterParam["customerId"]?.toIntOrNull() ?: null,
+                    filterParam["country"]?: null
+                );
 
-                val csvRow = CsvRow("536416", null, null, null, null, null, null, null);
-                val matcher: ExampleMatcher = ExampleMatcher.matchingAny().withIgnoreNullValues()
-
+                val matcher: ExampleMatcher = ExampleMatcher.matchingAll().withIgnoreNullValues().withIgnoreCase()
+                    .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
                 val example: Example<CsvRow> = Example.of(csvRow, matcher)
-                println(55555)
-            val limit: Pageable = PageRequest.of(0, 10, Sort.by("quantity").descending())
-                val result =  repository?.findAll(example, limit );
-                println(6666)
-                println(result)
+                val checkFilterParams = (
+                        filterParam["invoiceNo"].isNullOrEmpty() &&
+                                filterParam["stockCode"].isNullOrEmpty() &&
+                                filterParam["description"].isNullOrEmpty() &&
+                                filterParam["quantity"].isNullOrEmpty() &&
+                                filterParam["invoiceDate"].isNullOrEmpty() &&
+                                filterParam["unitPrice"].isNullOrEmpty() &&
+                                filterParam["customerId"].isNullOrEmpty() &&
+                                filterParam["country"].isNullOrEmpty()
+                        )
+
+                val checkSortParams = (
+                        sortParam["sort"].isNullOrEmpty()
+                    )
+
+                val limit: Pageable = if(!checkSortParams) {
+                    if (sortParam["order"] == "asc") {
+                        PageRequest.of(page.toInt(), 10, Sort.by(sortParam["sort"]).ascending())
+                    } else {
+                        PageRequest.of(page.toInt(), 10, Sort.by(sortParam["sort"]).descending())
+                    }
+                } else {
+                    PageRequest.of(page.toInt(), 10)
+                }
+                val result: Page<CsvRow?>? = if(!checkFilterParams){
+                    repository?.findAll(example, limit );
+                } else{
+                    repository?.findAll( limit );
+                }
                 return result
         } catch (e: IOException) {
-            println(777777)
             println(e)
             throw RuntimeException("fail to get csv data: " + e.message)
         }
