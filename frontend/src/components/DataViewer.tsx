@@ -55,9 +55,14 @@ const DataViewer = () => {
     params.api.setServerSideDatasource(datasource);
   }
 
+  const refresh = () =>{
+    gridRef.current.api.refreshServerSideStore();
+  }
+
   return (
     <div>
-      <h1>View Data</h1>
+      <h3>View Data</h3>
+      <div className="refresh"><button  className="btn btn-secondary" onClick={refresh}>Refresh <span>&#8635;</span></button></div>
       <div className="ag-theme-alpine">
         <AgGridReact
           columnDefs={columns}

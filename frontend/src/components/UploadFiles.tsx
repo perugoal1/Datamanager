@@ -61,7 +61,7 @@ function UploadFiles() {
 
     return (
         <div className="container my-4" style={{ textAlign: "center" }}>
-            <h1>Upload CSV </h1>
+            <h3>Upload CSV </h3>
 
             { (uploadProgress || progress) ?
                 <h4 className="my-2">{uploadProgress === 100  ? (`Processing : ${progress}% `) : (`Uploading : ${uploadProgress}% `) } </h4> :''

@@ -112,6 +112,19 @@ Run the below commands to run test cases.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+## Features Implemented
+
+- [x] Upload CSV
+- [x] Progress Bar to track the upload and processing status.
+- [X] View all the Uploaded Data as Data Grid
+- [X] Search data in Data Grid
+- [X] Sever side pagination
+- [X] Sever side filtering
+- [X] Sever side sorting
+- [X] Responsive Web App
+- [X] Test cases in backend
+
+
 <!-- MARKDOWN LINKS & IMAGES -->
 [screenshot]: images/UploadCsvScreenshot.png
 [beSetup]: images/beSetup.png
