@@ -103,7 +103,14 @@ Run the below commands to start local dev environment.
 
 Run the below commands to run test cases.
 
-1. To run backend use the following command
+1. Run following Docker compose command to start Mysql database for testing
+
+   All the services are listed in `docker-compose.yml`.
+   ```sh
+   docker-compose up
+   ```
+
+2. To run backend tests use the following command
 
    For Backend: All the services are listed in `./backend/`. Open the folder in Intellij IDE <br/>
    Go to `./src/test/kotlin/com.csvdatamanager.csv` and right click `com.csvdatamanager.csv` folder and `'Run Tests in com.csvdatamanager.csv'` 
