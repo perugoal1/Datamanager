@@ -8,7 +8,7 @@ public class CsvRow  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    var id: Long? = null
+    var id: Int? = null
 
     @Column(name = "invoiceNo")
     var invoiceNo: String? = null

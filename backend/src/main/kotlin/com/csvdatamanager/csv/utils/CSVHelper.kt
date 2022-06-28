@@ -1,12 +1,15 @@
 package com.csvdatamanager.csv.utils
 
 import com.csvdatamanager.csv.models.CsvRow
-import org.apache.commons.csv.*
+import org.apache.commons.*
+import org.apache.commons.csv.CSVFormat
+import org.apache.commons.csv.CSVParser
+import org.apache.commons.csv.CSVRecord
 import org.springframework.web.multipart.MultipartFile
 import java.io.*
 
 object CSVHelper {
-    var TYPE = "text/csv"
+    private var TYPE = "text/csv"
     fun hasCSVFormat(file: MultipartFile): Boolean {
         return TYPE == file.contentType || file.contentType == "application/vnd.ms-excel"
     }
@@ -44,24 +47,6 @@ object CSVHelper {
             }
         } catch (e: IOException) {
             throw RuntimeException("fail to parse CSV file: " + e.message)
-        }
-    }
-
-    fun dataToCSV(rowList: List<CSVRecord?>): ByteArrayInputStream {
-        val format: CSVFormat = CSVFormat.DEFAULT.withQuoteMode(QuoteMode.MINIMAL)
-        try {
-            ByteArrayOutputStream().use { out ->
-                CSVPrinter(PrintWriter(out), format).use { csvPrinter ->
-                    for (row in rowList) {
-                        val data: List<CSVRecord?> = listOf(row)
-                        csvPrinter.printRecord(data)
-                    }
-                    csvPrinter.flush()
-                    return ByteArrayInputStream(out.toByteArray())
-                }
-            }
-        } catch (e: IOException) {
-            throw RuntimeException("fail to import data to CSV file: " + e.message)
         }
     }
 }

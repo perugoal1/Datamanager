@@ -8,14 +8,12 @@ import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.io.IOException
-import java.util.*
 
 
 @Service
 class CSVService {
     @Autowired
     var repository: CsvRepository? = null
-
     fun save(file: MultipartFile, sseEmitter: SseEmitter?, guid: String) {
         try {
             val rows: List<CsvRow> = CSVHelper.csvToData(file.inputStream)
@@ -24,10 +22,7 @@ class CSVService {
 
             for ((index, item) in rows.withIndex()) {
                 repository?.save(item);
-                println(size);
-                val uploadPercentage: Float = (index.toFloat() * 100 / size).toFloat()
-                println(index);
-                println(uploadPercentage);
+                val uploadPercentage: Float = (index.toFloat() * 100 / size).toFloat();
                 sseEmitter?.send(SseEmitter.event().name(guid).data(uploadPercentage));
             }
             // repository?.saveAll(rows)

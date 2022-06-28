@@ -51,8 +51,6 @@ class CSVController {
         var message = ""
         if (hasCSVFormat(file)) {
             return try {
-                println(9999999)
-                println(sseEmitters[guid])
                 fileService!!.save(file, sseEmitters[guid], guid);
                 sseEmitters.remove(guid);
                 message = "Uploaded the file successfully: " + file.originalFilename
@@ -70,12 +68,6 @@ class CSVController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage(message, ""))
     }
 
-
-//    @PostMapping("/api/foos")
-//    @ResponseBody
-//    fun addFoo(@RequestParam(name = "id") fooId: String, @RequestParam name: String): String? {
-//        return "ID: $fooId Name: $name"
-//    }
     @GetMapping("/getData")
     fun getAllCsv( @RequestParam("page", required=false) page: String,
                    @RequestParam("invoiceNo", required=false) invoiceNo: String?,
@@ -106,6 +98,7 @@ class CSVController {
             sortParam["order"] = order
 
             val rows: Page<CsvRow?>? = fileService?.findByPagingCriteria(page, filterParam, sortParam)
+            println(rows)
             if (rows?.isEmpty == true) {
                 ResponseEntity<Page<CsvRow?>?>(rows, HttpStatus.OK)
             } else ResponseEntity<Page<CsvRow?>?>(rows, HttpStatus.OK)
