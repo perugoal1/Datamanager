@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  database:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: csvfileapp
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: password1234
+    ports:
+      - 3306:3306
+
